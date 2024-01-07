@@ -38,4 +38,5 @@ jobs:
           cd temp-repo
           git add .
           git commit -m "Add cn.conf file"
-          git push https://$DNSMASQ_CONF_TOKEN@github.com/angwz/dnsmasq-conf.git main
+          git remote set-url origin https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git
+          git push origin main
