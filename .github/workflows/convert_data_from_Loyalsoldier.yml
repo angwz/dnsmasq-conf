@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Pull current repository code
+
+      - name: Change to repository directory
+        run: cd dnsmasq-conf  # Change to your repository directory
+        working-directory: ${{ github.workspace }}  # Use github.workspace to ensure proper directory change
+
       - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:
