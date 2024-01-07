@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit Changes
         run: |
-          git clone https://github.com/your-username/dnsmasq-conf.git temp-repo
+          git clone https://github.com/angwz/dnsmasq-conf.git temp-repo
           cp -r converted_data_folder/* temp-repo/
           cd temp-repo
           git add .
