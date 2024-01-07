@@ -1,9 +1,8 @@
 name: Convert Data and Create cn.conf
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 16 * * 0'  # 北京时间每周一的00:00，UTC时间为每周日的16:00
 
 jobs:
   convert_data:
@@ -39,4 +38,4 @@ jobs:
           git add .
           git commit -m "Add cn.conf file"
           git remote set-url origin https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git
-          git push origin main
+          git push -f origin main  # 强制覆盖远程仓库中的文件
