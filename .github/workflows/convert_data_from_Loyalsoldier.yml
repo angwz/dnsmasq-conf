@@ -30,7 +30,7 @@ jobs:
       - name: Commit Changes
         run: |
           git config --global user.email "37972397+angwz@users.noreply.github.com"
-          git config --global user.name "angwz"
+          git config --global user.name "github-action[bot]"
           
           git fetch
           git checkout release
@@ -45,4 +45,10 @@ jobs:
   
           git branch -D release
           git branch -m release
-          git push https://angwz:${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git release
+
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.DNSMASQ_CONF_TOKEN }}
+          branch: release
+          force: true
