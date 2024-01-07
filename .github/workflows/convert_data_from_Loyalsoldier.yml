@@ -27,17 +27,13 @@ jobs:
         run: |
           sed 's/^\(.*\)$/server=\/\1\/119.29.29.29/' raw_data.txt > cn.conf
 
-      - name: Store cn.conf in Repository
+      - name: Commit Changes
         run: |
           mkdir converted_data_folder
           cp cn.conf converted_data_folder/
-
-      - name: Commit Changes
-        run: |
-          git clone https://github.com/angwz/dnsmasq-conf.git temp-repo
-          cp -r converted_data_folder/* temp-repo/
-          cd temp-repo
+          cd converted_data_folder
+          git init  # 初始化一个新的 Git 仓库
           git add .
           git commit -m "Add cn.conf file"
-          git remote set-url origin https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git
+          git remote add origin https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git
           git push -f origin main  # 强制覆盖远程仓库中的文件
