@@ -33,4 +33,4 @@ jobs:
           git config --global user.name "angwz"
           git add converted_data_folder/
           git commit -m "Update cn.conf file"
-          git push -f origin HEAD:main
+          git push -f https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git HEAD:main
