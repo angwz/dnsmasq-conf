@@ -15,12 +15,9 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Checkout repository
-        uses: actions/checkout@v2  # Pull current repository code
-
       - name: Get Raw Data
         run: |
-          wget https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt -O raw_data.txt  # Replace URL with the raw text file's address
+          curl -o raw_data.txt https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt  # Using curl to fetch the raw text file
 
       - name: Convert Data
         run: |
