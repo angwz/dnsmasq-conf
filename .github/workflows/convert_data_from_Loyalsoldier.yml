@@ -31,6 +31,24 @@ jobs:
         run: |
           git config --global user.email "37972397+angwz@users.noreply.github.com"
           git config --global user.name "angwz"
-          git add converted_data_folder/
-          git commit -m "Update cn.conf file"
-          git push -f https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git HEAD:main
+          
+          git fetch
+          git checkout release
+  
+          git checkout --orphan release-orphan
+          git rm -rf .
+  
+          cp -rf converted_data_folder/cn.conf ./
+  
+          git add cn.conf
+          git commit -am "Updated at $(date)"
+  
+          git branch -D release
+          git branch -m release
+              
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.DNSMASQ_CONF_TOKEN }}
+          branch: release
+          force: true
