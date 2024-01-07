@@ -23,6 +23,10 @@ jobs:
         run: |
           curl -o raw_data.txt https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
 
+      - name: Remove raw_data.txt if exists
+        run: |
+          rm -f raw_data.txt  # 删除 raw_data.txt 文件（如果存在）
+
       - name: Convert Data
         run: |
           sed 's/^\(.*\)$/server=\/\1\/119.29.29.29/' raw_data.txt > cn.conf
