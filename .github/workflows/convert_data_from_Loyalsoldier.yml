@@ -45,4 +45,4 @@ jobs:
   
           git branch -D release
           git branch -m release
-          git push
+          git push --set-upstream origin release
