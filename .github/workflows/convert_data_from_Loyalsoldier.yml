@@ -1,0 +1,35 @@
+name: Convert Data and Create cn.conf
+
+on:
+  push:
+    branches:
+      - main  # 可根据你的默认分支名修改
+
+jobs:
+  convert_data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2  # 拉取当前仓库代码
+
+      - name: Get Raw Data
+        run: |
+          wget https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt -O raw_data.txt  # 替换URL为要拉取的raw文本文件的地址
+
+      - name: Convert Data
+        run: |
+          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf  # 修改文本内容并生成cn.conf文件
+
+      - name: Store cn.conf in Repository
+        run: |
+          mkdir converted_data_folder  # 创建文件夹（如果需要）
+          cp cn.conf converted_data_folder/  # 将cn.conf文件复制到指定文件夹
+
+      - name: Commit Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add converted_data_folder/  # 添加新文件或更改
+          git commit -m "Add cn.conf file"
+          git push origin main  # 提交到默认分支，根据你的配置修改
