@@ -1,44 +1,39 @@
-name: Convert Data and Create cn.conf
+name: Generate cn.conf file
 
+# 触发工作流的事件，这里设置为每次push到main分支时
 on:
   push:
-    branches:
-      - main  # Change this according to your default branch
+    branches: [ main ]
 
+# 定义一个或多个工作流任务
 jobs:
-  convert_data:
+  # 任务的名称，可以自定义
+  generate-file:
+    # 任务运行的环境，这里设置为ubuntu最新版
     runs-on: ubuntu-latest
-
+    # 任务的步骤
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2  # Pull current repository code
-
-      - name: Change to repository directory
-        run: cd dnsmasq-conf  # Change to your repository directory
-        working-directory: ${{ github.workspace }}  # Use github.workspace to ensure proper directory change
-
-      - name: Use Node.js 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
+      # 第一步，使用actions/checkout@v4来检出仓库代码
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        
       - name: Get Raw Data
         run: |
-          curl -o raw_data.txt https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt  # Using curl to fetch the raw text file
+          wget https://raw.githubusercontent.com/username/other-repo/main/data.txt -O raw_data.txt  # Replace URL with the raw text file's address
 
       - name: Convert Data
         run: |
           sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf  # Modify text content and generate cn.conf file
-
-      - name: Store cn.conf in Repository
-        run: |
-          mkdir converted_data_folder  # Create folder if needed
-          cp cn.conf converted_data_folder/  # Copy cn.conf file to the specified folder
-
-      - name: Commit Changes
-        run: |
-          git config --local user.email "37972397+angwz@users.noreply.github.com"
-          git config --local user.name "angwz"
-          git add converted_data_folder/  # Add new files or changes
-          git commit -m "Add cn.conf file"
-          git push origin main  # Push to the default branch, change according to your setup
+      # 第三步，使用actions/upload-artifact@v2来上传生成的cn.conf文件
+      - name: Upload cn.conf file
+        uses: actions/upload-artifact@v2
+        with:
+          name: cn.conf
+          path: cn.conf
+      # 第四步，使用ad-m/github-push-action@v0来推送cn.conf文件到仓库
+      - name: Push cn.conf file to repository
+        uses: ad-m/github-push-action@v0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
