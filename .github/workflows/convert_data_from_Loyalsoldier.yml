@@ -24,7 +24,7 @@ jobs:
 
       - name: Convert Data
         run: |
-          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf
+          sed 's/^\(.*\)$/server=\/\1\/119.29.29.29/' raw_data.txt > cn.conf
 
       - name: Store cn.conf in Repository
         run: |
