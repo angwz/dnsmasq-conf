@@ -3,33 +3,38 @@ name: Convert Data and Create cn.conf
 on:
   push:
     branches:
-      - main  # 可根据你的默认分支名修改
+      - main  # Change this according to your default branch
 
 jobs:
   convert_data:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
       - name: Checkout repository
-        uses: actions/checkout@v2  # 拉取当前仓库代码
+        uses: actions/checkout@v2  # Pull current repository code
 
       - name: Get Raw Data
         run: |
-          wget https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt -O raw_data.txt  # 替换URL为要拉取的raw文本文件的地址
+          wget https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt -O raw_data.txt  # Replace URL with the raw text file's address
 
       - name: Convert Data
         run: |
-          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf  # 修改文本内容并生成cn.conf文件
+          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf  # Modify text content and generate cn.conf file
 
       - name: Store cn.conf in Repository
         run: |
-          mkdir converted_data_folder  # 创建文件夹（如果需要）
-          cp cn.conf converted_data_folder/  # 将cn.conf文件复制到指定文件夹
+          mkdir converted_data_folder  # Create folder if needed
+          cp cn.conf converted_data_folder/  # Copy cn.conf file to the specified folder
 
       - name: Commit Changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add converted_data_folder/  # 添加新文件或更改
+          git add converted_data_folder/  # Add new files or changes
           git commit -m "Add cn.conf file"
-          git push origin main  # 提交到默认分支，根据你的配置修改
+          git push origin main  # Push to the default branch, change according to your setup
