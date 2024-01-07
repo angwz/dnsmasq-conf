@@ -7,32 +7,30 @@ on:
   workflow_dispatch:  # 添加此行以允许手动触发
 
 jobs:
-  convert_data:
+  my_job:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set Git config
-        run: |
-          git config --global user.email "37972397+angwz@users.noreply.github.com"
-          git config --global user.name "angwz"
-
       - name: Get Raw Data
         run: |
           curl -o raw_data.txt https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
-
-      - name: Remove raw_data.txt if exists
-        run: |
-          rm -f raw_data.txt  # 删除 raw_data.txt 文件（如果存在）
 
       - name: Convert Data
         run: |
           sed 's/^\(.*\)$/server=\/\1\/119.29.29.29/' raw_data.txt > cn.conf
 
+      - name: Store cn.conf in Repository
+        run: |
+          mkdir converted_data_folder
+          cp cn.conf converted_data_folder/
+
       - name: Commit Changes
         run: |
-          git add cn.conf
-          git commit -m "Add cn.conf file"
-          git push -f origin HEAD:main  # 将 cn.conf 文件推送到 dnsmasq-conf 仓库的 main 分支
+          git config --global user.email "37972397+angwz@users.noreply.github.com"
+          git config --global user.name "angwz"
+          git add converted_data_folder/
+          git commit -m "Update cn.conf file"
+          git push -f origin HEAD:main
