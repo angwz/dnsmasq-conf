@@ -1,39 +1,38 @@
-name: Generate cn.conf file
+name: Convert Data and Create cn.conf
 
-# 触发工作流的事件，这里设置为每次push到main分支时
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
-# 定义一个或多个工作流任务
 jobs:
-  # 任务的名称，可以自定义
-  generate-file:
-    # 任务运行的环境，这里设置为ubuntu最新版
+  convert_data:
     runs-on: ubuntu-latest
-    # 任务的步骤
+
     steps:
-      # 第一步，使用actions/checkout@v4来检出仓库代码
-      - name: Check out repository code
-        uses: actions/checkout@v4
-        
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Get Raw Data
         run: |
-          wget https://raw.githubusercontent.com/username/other-repo/main/data.txt -O raw_data.txt  # Replace URL with the raw text file's address
+          curl -o raw_data.txt https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/china-list.txt
 
       - name: Convert Data
         run: |
-          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf  # Modify text content and generate cn.conf file
-      # 第三步，使用actions/upload-artifact@v2来上传生成的cn.conf文件
-      - name: Upload cn.conf file
-        uses: actions/upload-artifact@v2
-        with:
-          name: cn.conf
-          path: cn.conf
-      # 第四步，使用ad-m/github-push-action@v0来推送cn.conf文件到仓库
-      - name: Push cn.conf file to repository
-        uses: ad-m/github-push-action@v0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          force: true
+          sed 's/^/server=\/&\/119.29.29.29/' raw_data.txt > cn.conf
+
+      - name: Store cn.conf in Repository
+        run: |
+          mkdir converted_data_folder
+          cp cn.conf converted_data_folder/
+
+      - name: Commit Changes
+        run: |
+          git config --local user.email "37972397+angwz@users.noreply.github.com"
+          git config --local user.name "angwz"
+          git clone https://github.com/angwz/dnsmasq-conf.git temp-repo
+          cp -r converted_data_folder/* temp-repo/
+          cd temp-repo
+          git add .
+          git commit -m "Add cn.conf file"
+          git push origin main
