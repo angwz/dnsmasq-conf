@@ -29,11 +29,6 @@ jobs:
 
       - name: Commit Changes
         run: |
-          mkdir converted_data_folder
-          cp cn.conf converted_data_folder/
-          cd converted_data_folder
-          git init  # 初始化一个新的 Git 仓库
-          git add .
+          git add cn.conf
           git commit -m "Add cn.conf file"
-          git remote add origin https://${{ secrets.DNSMASQ_CONF_TOKEN }}@github.com/angwz/dnsmasq-conf.git
-          git push -f origin main  # 强制覆盖远程仓库中的文件
+          git push -f origin HEAD:main  # 将 cn.conf 文件推送到 dnsmasq-conf 仓库的 main 分支
