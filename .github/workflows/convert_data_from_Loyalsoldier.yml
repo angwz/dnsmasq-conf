@@ -3,6 +3,8 @@ name: Convert Data and Create cn.conf
 on:
   schedule:
     - cron: '0 16 * * 0'  # 北京时间每周一的00:00，UTC时间为每周日的16:00
+    
+  workflow_dispatch:  # 添加此行以允许手动触发
 
 jobs:
   convert_data:
