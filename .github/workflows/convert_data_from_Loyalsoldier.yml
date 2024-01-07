@@ -45,10 +45,4 @@ jobs:
   
           git branch -D release
           git branch -m release
-              
-      - name: GitHub Push
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.DNSMASQ_CONF_TOKEN }}
-          branch: release
-          force: true
+          git push
